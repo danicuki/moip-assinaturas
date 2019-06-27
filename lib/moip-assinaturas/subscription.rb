@@ -26,8 +26,7 @@ module Moip::Assinaturas
 
       def update(subscription_code, subscription_changes, opts = {})
         response = Moip::Assinaturas::Client.update_subscription(subscription_code, subscription_changes, opts)
-        hash     = JSON.load(response.body)
-        hash     = hash ? hash.with_indifferent_access : {}
+        hash = parse_json(response.body)
 
         case response.code
         when 200
@@ -85,8 +84,7 @@ module Moip::Assinaturas
 
       def suspend(code, opts={})
         response = Moip::Assinaturas::Client.suspend_subscription(code, opts)
-        hash     = JSON.load(response.body)
-        hash     = hash ? hash.with_indifferent_access : {}
+        hash = parse_json(response.body)
 
         case response.code
         when 200
@@ -104,8 +102,7 @@ module Moip::Assinaturas
 
       def activate(code, opts={})
         response = Moip::Assinaturas::Client.activate_subscription(code, opts)
-        hash     = JSON.load(response.body)
-        hash     = hash ? hash.with_indifferent_access : {}
+        hash = parse_json(response.body)
 
         case response.code
         when 200
@@ -123,8 +120,7 @@ module Moip::Assinaturas
 
       def cancel(code, opts={})
         response = Moip::Assinaturas::Client.cancel_subscription(code, opts)
-        hash     = JSON.load(response.body)
-        hash     = hash ? hash.with_indifferent_access : {}
+        hash = parse_json(response.body)
 
         case response.code
         when 200
@@ -140,6 +136,13 @@ module Moip::Assinaturas
         end
       end
 
+      private
+
+      def parse_json(json_string)
+        JSON.parse(json_string).with_indifferent_access
+      rescue JSON::ParserError
+        {}
+      end
     end
 
   end
